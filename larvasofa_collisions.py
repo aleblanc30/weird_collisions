@@ -94,7 +94,7 @@ def createScene(rootNode):
 
     # Collision model
     collision = bodyMechanics.addChild('larvaCollisionModel') # collision model
-    collision.addObject('TriangleSetTopologyContainer', name="Container")#, position="@../topo.position") # uncomment to get a segfault
+    collision.addObject('TriangleSetTopologyContainer', name="Container")
     collision.addObject('TriangleSetTopologyModifier')
     collision.addObject('Tetra2TriangleTopologicalMapping', input="@../topo", output="@Container")
 
