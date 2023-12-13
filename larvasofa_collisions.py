@@ -1,6 +1,5 @@
-import Sofa
 from stlib3.scene import ContactHeader
-from stlib3.physics.rigid import Floor
+from stlib3.physics.rigid import RigidObject
 
 # Units : mm and kg
 
@@ -50,7 +49,7 @@ def createScene(rootNode):
     ContactHeader(rootNode, alarmDistance=1, contactDistance=.01)
 
     # Add a floor
-    Floor(rootNode, rotation=[90, 0, 0], translation=[0,0,-10], isAStaticObject=True)
+    floor = RigidObject(parent=rootNode, surfaceMeshFileName="floor.obj", rotation=[90, 0, 0], translation=[0,0,-10], isAStaticObject=True)
 
     # create the larva object
     larvaBody = rootNode.addChild('larvaBody')
@@ -85,7 +84,7 @@ def createScene(rootNode):
     # Fix the tail of the larva, so that it is anchored and we can deform the larva by pulling on it
     # bodyMechanics.addObject('BoxROI', name="boxROI", box=[55, -25, -10, 80, 15, 10], drawBoxes=True) # create an anchor or selection zone (red skeleton)
     # bodyMechanics.addObject('FixedConstraint', indices="@boxROI.indices") # add the constraint
-    bodyMechanics.addObject('UncoupledConstraintCorrection') # add the constraint solver
+    bodyMechanics.addObject('LinearSolverConstraintCorrection') # add the constraint solver
 
     # Set a visual model
     visualModel = larvaBody.addChild('visualModel')
@@ -95,13 +94,14 @@ def createScene(rootNode):
 
     # Collision model
     collision = bodyMechanics.addChild('larvaCollisionModel') # collision model
-    collision.addObject('TriangleSetTopologyContainer', name="Container")
+    collision.addObject('TriangleSetTopologyContainer', name="Container")#, position="@../topo.position") # uncomment to get a segfault
     collision.addObject('TriangleSetTopologyModifier')
     collision.addObject('Tetra2TriangleTopologicalMapping', input="@../topo", output="@Container")
 
     collision.addObject('TriangleCollisionModel', selfCollision=True) # 3 types of collision
     collision.addObject('LineCollisionModel', selfCollision=True)
     collision.addObject('PointCollisionModel', selfCollision=True)
+
     
     
     return rootNode
